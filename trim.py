@@ -1,6 +1,6 @@
-from PIL import Image
+from PIL import Image, ImageChops
 import sys
-
+Image.MAX_IMAGE_PIXELS = 933120000
 im = Image.open(sys.argv[1])
 
 def trim(im):
