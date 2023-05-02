@@ -1,0 +1,64 @@
+<html>
+    <head>
+        <title>Rare Map Saver</title>
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/static/pico.classless.min.css" />
+        <link rel="stylesheet" type="text/css" href="/static/style.css" />
+    </head>
+
+    <body>
+        <main>
+            <h1>Rare Map Saver</h1>
+            <section id="form">
+                <form>
+                    <input type="text" id="url" placeholder="Paste Rare Map URL" required/>
+                    <input
+                        type="text"
+                        id="error"
+                        name="invalid"
+                        placeholder="Failed, try another one"
+                        readonly
+                        aria-invalid="true"
+                  />
+                    <button type="submit" id="submit">Get Map</button>
+                    <button aria-busy="true" id="loading">Please wait…</button>
+                </form>
+            </section>
+              <script>
+                    document.querySelector('form').addEventListener("submit", (event) => {
+                        event.preventDefault();
+                        document.querySelector('#loading').style.display = "block"
+                        document.querySelector('#submit').style.display = "none"
+                        document.querySelector('#error').style.display = "none";
+                        fetch('/get-map', {
+                            method: "POST",
+                            body: JSON.stringify({url: document.querySelector('#url').value}),
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        })
+                        .then(res => {
+                            document.querySelector('#loading').style.display = "none";
+                            document.querySelector('#submit').style.display = "block"
+
+                            if(res.status !== 201) {
+                                document.querySelector('#error').style.display = "block";
+                                throw new Exception('failed');
+                            }
+                            return res;
+                        })
+                        .then(res => res.blob())
+                        .then(data => {
+                            var a = document.createElement("a");
+                            a.href = window.URL.createObjectURL(data);
+                            a.download = "raremap.jpg";
+                            a.click();
+                        })
+                        .catch(data => {
+                            document.querySelector('#error').style.display = "block"
+                        })
+                    });
+                
+              </script> 
+    </body>
+</html>
