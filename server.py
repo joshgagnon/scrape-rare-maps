@@ -25,3 +25,5 @@ def getmap():
         mimetype='image/jpg'
     ), 201
 
+if __name__ == '__main__':
+    app.run()
