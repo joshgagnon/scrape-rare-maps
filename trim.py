@@ -11,5 +11,5 @@ def trim(im):
     if bbox:
         return im.crop(bbox)
 
-
-trim(im).save('trimmed.jpg')
+if __name__ == '__main__':
+    trim(im).save('trimmed.jpg')
