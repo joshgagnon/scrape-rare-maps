@@ -72,7 +72,7 @@ def stitch(attributes, tiles):
     return img
         
 
-async def scrape(code):
+async def scrapeSave(code):
     attributes = parse_xml(get_xml(code))
     attributes['Zoom'] = calc_zoom(attributes['Width'], attributes['Height'])
     attributes['X'] = int(attributes['Width'] / (attributes['TileSize'] - attributes['Overlap'])) + 1
@@ -82,5 +82,18 @@ async def scrape(code):
     result = stitch(attributes, tiles)
     result.save('./output.jpg')
 
+async def scrapeBytes(code):
+    attributes = parse_xml(get_xml(code))
+    attributes['Zoom'] = calc_zoom(attributes['Width'], attributes['Height'])
+    attributes['X'] = int(attributes['Width'] / (attributes['TileSize'] - attributes['Overlap'])) + 1
+    attributes['Y'] = int(attributes['Height'] / (attributes['TileSize'] - attributes['Overlap'])) + 1
+    attributes['Code'] = code
+    tiles = await get_tiles(attributes)
+    result = stitch(attributes, tiles)
+    img_byte_arr = io.BytesIO()
+    result.save(img_byte_arr, 'JPEG')
+    img_byte_arr.seek(0)
+    return img_byte_arr
+
 if __name__ == "__main__":
-    asyncio.run(scrape(sys.argv[1]))
+    asyncio.run(scrapeSave(sys.argv[1]))
