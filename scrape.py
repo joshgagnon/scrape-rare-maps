@@ -60,8 +60,11 @@ def stitch(attributes, tiles):
     print('Stitching')
     img = Image.new('RGB', (attributes['Width'], attributes['Height']))
     for tile in tiles:
-        tile_img = Image.open(tile.img)
-        img.paste(im=tile_img, box=((tile.x * attributes['TileSize']) or 1, (tile.y * attributes['TileSize']) or 1))
+        try:
+            tile_img = Image.open(tile.img)
+            img.paste(im=tile_img, box=((tile.x * attributes['TileSize']) or 1, (tile.y * attributes['TileSize']) or 1))
+        except:
+            pass    
 
     bg = Image.new(img.mode, img.size, img.getpixel((img.size[0]-1,img.size[1]-1)))
     diff = ImageChops.difference(img, bg)
